@@ -1,64 +1,100 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
         }
         .container {
+            max-width: 600px;
+            margin: 0 auto;
             padding: 20px;
         }
-        .button {
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        button {
             padding: 10px 20px;
-            margin: 10px;
-            background-color: #0088cc;
-            color: white;
+            background-color: #28a745;
+            color: #fff;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+        .table-view {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Telegram Mini App</h1>
-        <p>Welcome to the Telegram Mini App!</p>
-        <button class="button" onclick="addTable()">Добавить таблицу</button>
-        <button class="button" onclick="addAccount()">Добавить аккаунт</button>
-        <button class="button" onclick="addProject()">Добавить проект</button>
-        <button class="button" onclick="addNote()">Добавить заметку</button>
-        <button class="button" onclick="viewTable()">Показать таблицу</button>
+        <div id="form-container">
+            <div class="input-group">
+                <label for="table-name">Table Name:</label>
+                <input type="text" id="table-name">
+            </div>
+            <button id="add-table-btn" onclick="addTable()">Add Table</button>
+        </div>
+        <div id="output-container"></div>
+        <div id="table-container"></div>
     </div>
-
     <script>
-        const tg = window.Telegram.WebApp;
-
-        function addTable() {
-            tg.sendData('add_table');
+        async function addTable() {
+            const tableName = document.getElementById('table-name').value;
+            const response = await fetch('/api/add_table', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ table_name: tableName })
+            });
+            const data = await response.json();
+            document.getElementById('output-container').innerHTML = `<p>${data.message}</p>`;
         }
 
-        function addAccount() {
-            tg.sendData('add_account');
+        async function addAccount() {
+            // Add implementation to add account
         }
 
-        function addProject() {
-            tg.sendData('add_project');
+        async function addProject() {
+            // Add implementation to add project
         }
 
-        function addNote() {
-            tg.sendData('add_note');
+        async function addNote() {
+            // Add implementation to add note
         }
 
-        function viewTable() {
-            tg.sendData('view_table');
+        async function editNote() {
+            // Add implementation to edit note
         }
 
-        tg.expand();
+        async function deleteNote() {
+            // Add implementation to delete note
+        }
+
+        async function viewTable() {
+            const tableName = document.getElementById('table-name').value;
+            const response = await fetch(`/api/view_table?table_name=${tableName}`);
+            const data = await response.json();
+            const tableContainer = document.getElementById('table-container');
+            tableContainer.innerHTML = `<pre>${data.table}</pre>`;
+        }
     </script>
 </body>
 </html>
